@@ -31,7 +31,7 @@ class Mark(models.Model):
     answered = models.BooleanField(default=False)
 
 @receiver (pre_save, sender=Mark)
-def update_plan_price(sender, instance, **kwargs):
+def update_user_score(sender, instance, **kwargs):
     if instance.answered:
         instance.user.score += instance.question.weight
         instance.user.save()

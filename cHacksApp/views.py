@@ -20,24 +20,21 @@ class UserViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
 
-def submit(request, question):
-    if request.POST:
-        la = request.POST
-        user_mark, _ = Mark.objects.get_or_create(user = request.user, question= question)
-        if user_mark.answered:
-            return {
-                "message": "Question already answered"
-            }
-        elif user_mark.question.answer == la.lower().strip():
-            user_mark.answered = True
-            user_mark.save()
-        
-        return {
 
-            "message": "Wrong Answer"
-        }
+class Certificate(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-    return Questions.objects.get(id = question)
+    def get(self, request, format=None):
+        # check if all questions answered
+        count_q = Questions.objects.all().count()
+        count_a = Mark.objects.filter(user=request.user, answered=True).count()
+        if count_q == count_a:
+            return Response ({"message":f"congratulations {request.user.name}"})
+        return Response({
+            "message": "answer all questions"
+        })
+
+
 
 
 
@@ -73,7 +70,7 @@ class AnswerQuestions(APIView):
             return Response({
                 "message": "Question already answered"})
         
-        if answer == question.answer:
+        if answer.lower().strip() == question.answer:
             mark.answered =True
             mark.save() 
             right = Mark.objects.filter(answered=True)

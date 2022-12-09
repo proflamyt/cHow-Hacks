@@ -16,11 +16,20 @@ class User(AbstractUser):
 
 
 class Questions(models.Model):
+    STATUS_CHOICES = (
+        ('E', 'Easy'),
+        ('M', 'Medium'),
+        ('H', 'Hard')
+    )
+
     name = models.CharField(max_length=255)
     weight = models.IntegerField()
     answer = models.CharField(max_length=255)
     description = models.TextField()
-    file = models.FileField()
+    category = models.CharField(
+        max_length=1, choices=STATUS_CHOICES, default='E')
+    file = models.FileField(blank=True)
+    code = models.TextField(blank=True, null=True)
 
 
 

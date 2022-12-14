@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from .serializers import AnswerSerializer, MarkSerializer, QuestionSerializer, UserSerializer
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
@@ -33,7 +34,6 @@ class Certificate(APIView):
         return Response({
             "message": "answer all questions"
         })
-
 
 
 

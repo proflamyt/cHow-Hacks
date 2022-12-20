@@ -15,7 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = User.objects.all().order_by('rank')
+    queryset = User.objects.filter(user_score__school__name='ATC').order_by('user_score__rank') #.order_by('rank')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']

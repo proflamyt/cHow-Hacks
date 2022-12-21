@@ -16,7 +16,7 @@ router.register(r'questions', QuestionsView)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    path('answers/<int:pk>', AnswerQuestions.as_view(), name='answers'),
+    path('answers/<slug:school>/<int:pk>', AnswerQuestions.as_view(), name='answers'),
     path('certificate/', Certificate.as_view()),
     path('api/login', TokenObtainPairView.as_view() , name='token_obtain_pair'),
     path('api/refresh', TokenRefreshView.as_view() , name='token_refresh')

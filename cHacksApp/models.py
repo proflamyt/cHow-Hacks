@@ -2,12 +2,19 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils.text import slugify
 
 # Create your models here.
 
 class School(models.Model):
     name = models.CharField(max_length=255)
     questions = models.ManyToManyField('Questions')
+    slug = models.SlugField(null=False, unique=True)
+
+    def save(self, *args, **kwargs):  # new
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
 
 
@@ -51,11 +58,13 @@ class Mark(models.Model):
     question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name="question")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='marked')
     answered = models.BooleanField(default=False)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+
 
 @receiver (pre_save, sender=Mark)
 def update_user_score(sender, instance, **kwargs):
     if instance.answered:
-        instance.user_score.score += instance.question.weight
+        instance.user.user_score.get(school=instance.school).score += instance.question.weight
         instance.user.save()
 
 

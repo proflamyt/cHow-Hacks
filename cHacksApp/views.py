@@ -47,7 +47,7 @@ class QuestionsView(viewsets.ModelViewSet):
     """
     Returns all Questions 
     """
-    queryset = Questions.objects.all().order_by('category')
+    queryset = School.objects.get(name='ATC').objects.all().order_by('category')
     serializer_class = QuestionSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']
@@ -61,11 +61,13 @@ class AnswerQuestions(APIView):
     serializer_class = AnswerSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-    def post(self, request, pk, format=None):
+    def post(self, request, school, pk, format=None):
         answer = request.POST.get('answer')
         question  = get_object_or_404(Questions, pk=pk)
+        # check if enrolled for school
+
         # check if question is alrady answered
-        mark , created = Mark.objects.get_or_create(user=request.user, question=question)
+        mark , created = Mark.objects.get_or_create(user=request.user, question=question, )
         if mark.answered:
             return Response({
                 "message": "Question already answered"})
@@ -73,7 +75,7 @@ class AnswerQuestions(APIView):
         if answer.lower().strip() == question.answer:
             mark.answered =True
             mark.save() 
-            right = Mark.objects.filter(answered=True)
+            right = Mark.objects.filter(question=question, answered=True)
             serializer = MarkSerializer(right, context={'request': request}, many=True)
             return Response(serializer.data)
         return Response({"message":"Answer is Incorrect"})

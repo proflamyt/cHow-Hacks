@@ -9,7 +9,7 @@ from django.utils.text import slugify
 class School(models.Model):
     name = models.CharField(max_length=255)
     questions = models.ManyToManyField('Questions')
-    slug = models.SlugField(null=False, unique=True)
+    slug = models.SlugField(null=True, blank=True, unique=True)
 
     def save(self, *args, **kwargs):  # new
         if not self.slug:

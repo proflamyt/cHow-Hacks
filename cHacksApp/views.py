@@ -65,9 +65,9 @@ class AnswerQuestions(APIView):
         answer = request.POST.get('answer')
         question  = get_object_or_404(Questions, pk=pk)
         # check if enrolled for school
-
+        ans_school = get_object_or_404(School, slug=school)
         # check if question is alrady answered
-        mark , created = Mark.objects.get_or_create(user=request.user, question=question, )
+        mark , created = Mark.objects.get_or_create(user=request.user, question=question, school=ans_school)
         if mark.answered:
             return Response({
                 "message": "Question already answered"})
@@ -75,7 +75,7 @@ class AnswerQuestions(APIView):
         if answer.lower().strip() == question.answer:
             mark.answered =True
             mark.save() 
-            right = Mark.objects.filter(question=question, answered=True)
+            right = Mark.objects.filter(question=question, answered=True, school=ans_school)
             serializer = MarkSerializer(right, context={'request': request}, many=True)
             return Response(serializer.data)
         return Response({"message":"Answer is Incorrect"})

@@ -47,7 +47,7 @@ class QuestionsView(viewsets.ModelViewSet):
     """
     Returns all Questions 
     """
-    queryset = School.objects.get(name='ATC').objects.all().order_by('category')
+    queryset = School.objects.get(name='ATC').questions.all().order_by('category')
     serializer_class = QuestionSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']

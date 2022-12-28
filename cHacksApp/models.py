@@ -42,10 +42,20 @@ class Questions(models.Model):
         ('H', 'Hard')
     )
 
+    QUESTION_TYPE = (
+        ('Code', 'Code'),
+        ('Downloadable', 'Downloadable'),
+        ('InputFlag', 'InputFlag'),
+        ('Select', 'Select'),
+
+    )
+
     name = models.CharField(max_length=255)
     weight = models.IntegerField()
     answer = models.CharField(max_length=255)
     description = models.TextField()
+    question_type = models.CharField(
+        max_length=13, choices=QUESTION_TYPE, default='InputFlag')
     category = models.CharField(
         max_length=1, choices=STATUS_CHOICES, default='E')
     file = models.FileField(blank=True)

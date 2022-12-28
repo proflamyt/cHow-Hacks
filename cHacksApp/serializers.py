@@ -16,7 +16,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Questions
-        fields = ['url', 'name', 'weight', 'category', 'description', 'file', 'code' ]
+        fields = ['url', 'name', 'weight', 'category', 'description', 'file', 'code', 'question_type' ]
 
 
 class MarkSerializer(serializers.HyperlinkedModelSerializer):

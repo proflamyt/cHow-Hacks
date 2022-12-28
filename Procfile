@@ -1,1 +1,1 @@
-web: python manage.py migrate && gunicorn 'cHacks.wsgi'
+web: python manage.py makemigrations && python manage.py migrate && gunicorn 'cHacks.wsgi'

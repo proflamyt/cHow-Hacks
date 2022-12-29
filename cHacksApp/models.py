@@ -77,5 +77,8 @@ def update_user_score(sender, instance, **kwargs):
         instance.user.user_score.get(school=instance.school).score += instance.question.weight
         instance.user.save()
 
-
-
+@receiver (pre_save, sender=Questions)
+def update_answers(sender, instance, **kwargs):
+    if instance.answer:
+        instance.answer = instance.answer.lower().strip()
+        

@@ -7,7 +7,7 @@ from django.utils.text import slugify
 # Create your models here.
 
 class School(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
     questions = models.ManyToManyField('Questions')
     slug = models.SlugField(null=True, blank=True, unique=True)
 

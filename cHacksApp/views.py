@@ -7,7 +7,7 @@ from .serializers import AnswerSerializer, MarkSerializer, QuestionSerializer, U
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 User = get_user_model()
 
@@ -15,10 +15,14 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = User.objects.filter(user_score__school__name='ATC').order_by('user_score__rank') #.order_by('rank')
+    #.order_by('rank')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']
+
+    def get_queryset(self, request):
+        school = get_list_or_404(User, user_score__school__name='ATC')
+        return school.order_by('user_score__rank')
 
 
 
@@ -47,10 +51,14 @@ class QuestionsView(viewsets.ModelViewSet):
     """
     Returns all Questions 
     """
-    queryset = School.objects.get(name='ATC').questions.all().order_by('category')
+    #queryset = School.objects.get(name='ATC').questions.all().order_by('category')
     serializer_class = QuestionSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']
+
+    def get_queryset(self):
+        school = get_object_or_404(School, name='ATC')
+        return school.questions.all().order_by('category')
 
 
 class AnswerQuestions(APIView):

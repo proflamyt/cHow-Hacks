@@ -7,8 +7,8 @@ from rest_framework_simplejwt.views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'questions', QuestionsView)
+router.register(r'users', UserViewSet, basename='users')
+router.register(r'questions', QuestionsView, basename='questions')
 
 
 

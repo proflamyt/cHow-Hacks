@@ -92,6 +92,7 @@ else:
     DATABASES = {
         "default": dj_database_url.config(default=os.getenv("DATABASE_URL"), conn_max_age=1800),
     }
+    CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

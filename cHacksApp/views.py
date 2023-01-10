@@ -15,14 +15,14 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    #.order_by('rank')
+  
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']
 
-    def get_queryset(self, request):
-        school = get_list_or_404(User, user_score__school__name='ATC')
-        return school.order_by('user_score__rank')
+    def get_queryset(self):
+        users = get_list_or_404(User, user_score__school__name='ATC')
+        return users.order_by('user_score__rank')
 
 
 
@@ -56,7 +56,7 @@ class QuestionsView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']
 
-    def get_queryset(self):
+    def get_queryset(self, request):
         school = get_object_or_404(School, name='ATC')
         return school.questions.all().order_by('category')
 

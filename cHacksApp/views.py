@@ -56,7 +56,7 @@ class QuestionsView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']
 
-    def get_queryset(self, request):
+    def get_queryset(self):
         school = get_object_or_404(School, name='ATC')
         return school.questions.all().order_by('category')
 

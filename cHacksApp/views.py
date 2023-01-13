@@ -1,13 +1,12 @@
-from django.shortcuts import render
 from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework import permissions
-from .serializers import AnswerSerializer, MarkSerializer, QuestionSerializer, UserSerializer
+from .serializers import AnswerSerializer, MarkSerializer, PasswordSerializer, QuestionSerializer, UserSerializer
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, get_list_or_404
+from rest_framework import status
 
 User = get_user_model()
 
@@ -22,7 +21,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         users = get_list_or_404(User, user_score__school__name='ATC')
-        return users.order_by('user_score__rank')
+        return users
 
 
 
@@ -38,12 +37,6 @@ class Certificate(APIView):
         return Response({
             "message": "answer all questions"
         })
-
-
-
-
-
-
 
 
 
@@ -69,22 +62,45 @@ class AnswerQuestions(APIView):
     serializer_class = AnswerSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-    def post(self, request, school, pk, format=None):
-        answer = request.POST.get('answer')
-        question  = get_object_or_404(Questions, pk=pk)
-        # check if enrolled for school
-        ans_school = get_object_or_404(School, slug=school)
-        # check if question is alrady answered
-        mark , created = Mark.objects.get_or_create(user=request.user, question=question, school=ans_school)
-        if mark.answered:
+    def post(self, request, school='ATC', pk=1, format=None):
+        try:
+            answer = request.data.get('answer')
+            question  = get_object_or_404(Questions, pk=pk)
+            # check if enrolled for school
+            print(School.objects.all().values())
+            ans_school = get_object_or_404(School, name=school)
+            
+            # check if question is alrady answered
+            mark , created = Mark.objects.get_or_create(user=request.user, question=question, school=ans_school)
+            if mark.answered:
+                return Response({
+                    "message": "Question already answered"})
+            
+            if answer.lower().strip() == question.answer:
+                mark.answered =True
+                mark.save() 
+                right = Mark.objects.filter(question=question, answered=True, school=ans_school)
+                serializer = MarkSerializer(right, context={'request': request}, many=True)
+                return Response(serializer.data)
+            return Response({"message":"Answer is Incorrect" }, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Bad Request" }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class PasswordChange(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PasswordSerializer
+
+    def put(self, request):
+        serializer = PasswordSerializer(data=request.data)
+       
+        if serializer.is_valid(raise_exception=True):
+            request.user.set_password(serializer.data.get('password'))
+            request.user.save()
             return Response({
-                "message": "Question already answered"})
-        
-        if answer.lower().strip() == question.answer:
-            mark.answered =True
-            mark.save() 
-            right = Mark.objects.filter(question=question, answered=True, school=ans_school)
-            serializer = MarkSerializer(right, context={'request': request}, many=True)
-            return Response(serializer.data)
-        return Response({"message":"Answer is Incorrect"})
+                "message": "Password Changed Successfully", 
+            },status=status.HTTP_201_CREATED)
+        return Response({"message": ["Invalid Password"]}, status=status.HTTP_400_BAD_REQUEST)   
 

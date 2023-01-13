@@ -22,6 +22,9 @@ class School(models.Model):
 class User(AbstractUser):
     name = models.CharField(max_length=255)
     email = models.EmailField()
+
+    class Meta:
+        ordering = ["user_score__rank"]
     
     
 

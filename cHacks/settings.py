@@ -44,12 +44,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'cHacksApp',
+    'corsheaders',
     'drf_yasg'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -94,6 +96,11 @@ else:
         "default": dj_database_url.config(default=os.getenv("DATABASE_URL"), conn_max_age=1800),
     }
     CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
+    CORS_ALLOW_ALL_ORIGINS = True
+#     CORS_ALLOWED_ORIGINS = [
+#     'https://web-production-d087.up.railway.app',
+#     ''
+# ]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
@@ -16,12 +16,32 @@ class School(models.Model):
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
 
+class CustomUserManager(BaseUserManager): # 1.
 
+    def create_user(self, email, password=None): # 2.
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model(
+            email=self.normalize_email(email),
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
 
 class User(AbstractUser):
     name = models.CharField(max_length=255)
-    email = models.EmailField()
+    
+    changed_password = models.BooleanField(default=False)
+
+    email = models.EmailField(unique=True) # 3.
+
+    objects = CustomUserManager() # 4.
+
+    USERNAME_FIELD = 'email' # 5.
+    REQUIRED_FIELDS = [] # 6.
 
     class Meta:
         ordering = ["user_score__rank"]

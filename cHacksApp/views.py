@@ -2,11 +2,12 @@ from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework import permissions
-from .serializers import AnswerSerializer, MarkSerializer, PasswordSerializer, QuestionSerializer, UserSerializer
+from .serializers import AnswerSerializer, MarkSerializer, MyTokenObtainPairSerializer, PasswordSerializer, QuestionSerializer, UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 User = get_user_model()
 
@@ -98,9 +99,14 @@ class PasswordChange(APIView):
        
         if serializer.is_valid(raise_exception=True):
             request.user.set_password(serializer.data.get('password'))
+            request.user.changed_password = True
             request.user.save()
             return Response({
                 "message": "Password Changed Successfully", 
             },status=status.HTTP_201_CREATED)
         return Response({"message": ["Invalid Password"]}, status=status.HTTP_400_BAD_REQUEST)   
 
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

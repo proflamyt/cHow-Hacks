@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import Mark, Questions
+from .models import Mark, Questions, SchoolScore
 
 User = get_user_model()
 
@@ -14,11 +14,21 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['has_changed_password'] = user.changed_password
         return token
 
+class SchoolSerializer(serializers.Serializer):
+    score = serializers.CharField()
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+
+class UserSerializer(serializers.ModelSerializer):
+    user_score = serializers.SerializerMethodField()
+
+    def get_user_score(self, user):
+        serializer = SchoolSerializer(user.user_score.get(school__name='ATC'))
+        print(serializer.data)
+        return serializer.data
+
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'user_score__score']
+        fields = [ 'username', 'email', 'user_score']
         #lookup_field = 'username'
 
 

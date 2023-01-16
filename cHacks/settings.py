@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -90,6 +91,11 @@ if DEBUG:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    SIMPLE_JWT = {
+
+        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
+
+    }
 else:
     
     DATABASES = {
@@ -97,6 +103,7 @@ else:
     }
     CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
     CORS_ORIGIN_ALLOW_ALL = True
+    
 #     CORS_ALLOWED_ORIGINS = [
 #     'https://web-production-d087.up.railway.app',
 #     ''

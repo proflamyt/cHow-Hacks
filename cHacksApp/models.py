@@ -13,38 +13,65 @@ class School(models.Model):
 
     def save(self, *args, **kwargs):  # new
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
+
+    def ___str__(self):
+        return self.name
+
 
 class CustomUserManager(BaseUserManager): # 1.
 
-    def create_user(self, email, password=None): # 2.
+    def create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError('Users must have an email address')
-
-        user = self.model(
-            email=self.normalize_email(email),
-        )
+            raise ValueError(_('Users must have an email address'))
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
+    def create_superuser(self, email, password, **extra_fields):
+        """
+        Creates and saves a superuser with the given email and password.
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
+        return self.create_user(email, password, **extra_fields)
+
 
 class User(AbstractUser):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
     
     changed_password = models.BooleanField(default=False)
 
     email = models.EmailField(unique=True) # 3.
 
+    # username = models.CharField(max_length=255, null=True, blank=True)
+    
+
     objects = CustomUserManager() # 4.
 
-    USERNAME_FIELD = 'email' # 5.
-    REQUIRED_FIELDS = [] # 6.
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ()
+    # REQUIRED_FIELDS = [] # 6.
 
     class Meta:
         ordering = ["user_score__score"]
+
+
+    def __str__(self):
+        return self.email
     
     
 
@@ -56,6 +83,9 @@ class SchoolScore(models.Model):
 
     class Meta:
         unique_together = ('school', 'user',)
+
+    def __str__(self):
+        return f"{self.score} for {self.school}"
 
 
 class Questions(models.Model):
@@ -74,7 +104,7 @@ class Questions(models.Model):
     )
 
     name = models.CharField(max_length=255)
-    weight = models.IntegerField()
+    weight = models.IntegerField(default=1)
     answer = models.CharField(max_length=255)
     description = models.TextField()
     question_type = models.CharField(

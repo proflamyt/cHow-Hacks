@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'cHacksApp',
     'corsheaders',
+    'cHacksApp',
     'drf_yasg'
 ]
 
@@ -96,7 +96,7 @@ else:
         "default": dj_database_url.config(default=os.getenv("DATABASE_URL"), conn_max_age=1800),
     }
     CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
-    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ORIGIN_ALLOW_ALL = True
 #     CORS_ALLOWED_ORIGINS = [
 #     'https://web-production-d087.up.railway.app',
 #     ''

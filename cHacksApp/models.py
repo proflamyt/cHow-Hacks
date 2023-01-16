@@ -44,13 +44,13 @@ class User(AbstractUser):
     REQUIRED_FIELDS = [] # 6.
 
     class Meta:
-        ordering = ["user_score__rank"]
+        ordering = ["user_score__score"]
     
     
 
 class SchoolScore(models.Model):
     score = models.IntegerField(default=0)
-    rank = models.IntegerField(null=True)
+    # rank = models.IntegerField(null=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='school_score')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_score')
 

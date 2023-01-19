@@ -76,6 +76,7 @@ class AnswerQuestions(APIView):
             mark , created = Mark.objects.get_or_create(user=request.user, question=question, school=ans_school)
             if mark.answered:
                 return Response({
+                    "status": False,
                     "message": "Question already answered"})
             
             if answer.lower().strip() == question.answer:
@@ -83,8 +84,8 @@ class AnswerQuestions(APIView):
                 mark.save() 
                 right = Mark.objects.filter(question=question, answered=True, school=ans_school)
                 serializer = MarkSerializer(right, context={'request': request}, many=True)
-                return Response(serializer.data)
-            return Response({"message":"Answer is Incorrect" }, status=status.HTTP_200_OK)
+                return Response({"status":True, "message": "Answer is Correct"})
+            return Response({"status": False, "message":"Answer is Incorrect" }, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
             return Response({"message":"Bad Request" }, status=status.HTTP_400_BAD_REQUEST)

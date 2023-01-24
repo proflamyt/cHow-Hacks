@@ -28,7 +28,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -96,13 +96,14 @@ if DEBUG:
         'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
 
     }
+    CORS_ORIGIN_ALLOW_ALL = True
 else:
     
     DATABASES = {
         "default": dj_database_url.config(default=os.getenv("DATABASE_URL"), conn_max_age=1800),
     }
-    CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
-    CORS_ORIGIN_ALLOW_ALL = True
+    #CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
+    
     SIMPLE_JWT = {
 
         'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),

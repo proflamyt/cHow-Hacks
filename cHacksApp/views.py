@@ -83,6 +83,7 @@ class AnswerQuestions(APIView):
                 mark.answered =True
                 mark.save() 
                 right = Mark.objects.filter(question=question, answered=True, school=ans_school)
+                
                 serializer = MarkSerializer(right, context={'request': request}, many=True)
                 return Response({"status":True, "message": "Answer is Correct"})
             return Response({"status": False, "message":"Answer is Incorrect" }, status=status.HTTP_200_OK)

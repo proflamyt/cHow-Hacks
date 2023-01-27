@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import Mark, Questions, SchoolScore
+from .models import Mark, Questions, SchoolScore, Notification
 
 User = get_user_model()
 
@@ -45,6 +45,9 @@ class MarkSerializer(serializers.HyperlinkedModelSerializer):
         model = Mark
         fields = [ 'user']
 
+class NotificationSerializer(serializers.ModelSerializer):
+    model = Notification
+    exclude = ("user",)
 
 
 class AnswerSerializer(serializers.Serializer):

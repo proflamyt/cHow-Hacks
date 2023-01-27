@@ -109,6 +109,7 @@ class Questions(models.Model):
     description = models.TextField()
     question_type = models.CharField(
         max_length=13, choices=QUESTION_TYPE, default='InputFlag')
+    encoded = models.CharField(max_length=255, null=True, blank=True)
     category = models.CharField(
         max_length=1, choices=STATUS_CHOICES, default='E')
     file = models.FileField(blank=True)
@@ -136,4 +137,6 @@ def update_user_score(sender, instance, **kwargs):
 def update_answers(sender, instance, **kwargs):
     if instance.answer:
         instance.answer = instance.answer.lower().strip()
+        instance.encoded = "".join(["*" if c != " " else c for c in instance.answer])
+
         

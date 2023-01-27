@@ -35,8 +35,8 @@ class UserSerializer(serializers.ModelSerializer):
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Questions
-        fields = ['url', 'id', 'name', 'weight', 'category', 'description', 'file', 'code', 'question_type' ]
-
+        # fields = ['url', 'id', 'name', 'weight', 'category', 'encoded', 'description', 'file', 'code', 'question_type' ]
+        exclude = ('answer',)
 
 class MarkSerializer(serializers.HyperlinkedModelSerializer):
     #url = serializers.HyperlinkedIdentityField(view_name='answers', lookup_field='pk')

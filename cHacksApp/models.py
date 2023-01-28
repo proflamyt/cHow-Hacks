@@ -143,6 +143,6 @@ def update_user_score(sender, instance, **kwargs):
 def update_answers(sender, instance, **kwargs):
     if instance.answer:
         instance.answer = instance.answer.lower().strip()
-        instance.encoded = "".join(["*" if c != " " else c for c in instance.answer])
+        instance.encoded = "".join(["*" if c not in [" ", '.'] else c for c in instance.answer])
 
         

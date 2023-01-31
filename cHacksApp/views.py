@@ -118,7 +118,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 class ScorerView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PasswordSerializer
-    http_method_names = ['get',]
+    http_method_names = ['get', ]
 
     def get(self, request, school='ATC', pk=1):
         try:
@@ -136,6 +136,7 @@ class UserNotificationView(APIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated,]
+    http_method_names = ['get', 'delete']
 
     def get(self, request, school='ATC'):
         notifications = Notification.objects.filter(user=request.user)
@@ -143,4 +144,10 @@ class UserNotificationView(APIView):
         return Response({
             "status": "sucess",
             "notifications": serializer.data
+        })
+
+    def delete(self, request, school='ATC'):
+        Notification.objects.filter(user=request.user).delete()
+        return Response ({
+            "status": "success"
         })

@@ -2,7 +2,7 @@ from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework import permissions
-from .serializers import AnswerSerializer, MarkSerializer, MyTokenObtainPairSerializer, PasswordSerializer, QuestionSerializer, UserSerializer
+from .serializers import AnswerSerializer, MarkSerializer, MyTokenObtainPairSerializer, NotificationSerializer, PasswordSerializer, QuestionSerializer, UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -130,3 +130,17 @@ class ScorerView(APIView):
             return Response(serializer.data)
         except:
             return Response({"message":"wahala"})
+
+
+class UserNotificationView(APIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get(self, request, school='ATC'):
+        notifications = Notification.objects.filter(user=request.user)
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response({
+            "status": "sucess",
+            "notifications": serializer.data
+        })

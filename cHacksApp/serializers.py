@@ -23,20 +23,25 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_user_score(self, user):
         serializer = SchoolSerializer(user.user_score.get(school__name='ATC'))
-        print(serializer.data)
-        return serializer.data
+        return serializer.data.get("score")
 
     class Meta:
         model = User
-        fields = [ 'username', 'email', 'user_score']
+        fields = [ 'username', 'user_score']
         #lookup_field = 'username'
 
 
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
+    # ans_num = serializers.IntegerField()
+    id = serializers.IntegerField()
     class Meta:
         model = Questions
         # fields = ['url', 'id', 'name', 'weight', 'category', 'encoded', 'description', 'file', 'code', 'question_type' ]
         exclude = ('answer',)
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     representation['ans_num'] = MyModel.objects.filter(...).count()
+    #     return representation
 
 class MarkSerializer(serializers.HyperlinkedModelSerializer):
     #url = serializers.HyperlinkedIdentityField(view_name='answers', lookup_field='pk')
@@ -56,3 +61,9 @@ class AnswerSerializer(serializers.Serializer):
 
 class PasswordSerializer(serializers.Serializer):
     password = serializers.CharField( required=True, validators=[validate_password])
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        exclude = ("user",)

@@ -97,7 +97,7 @@ if DEBUG:
 
     }
     CORS_ORIGIN_ALLOW_ALL = True
-    CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
+    CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', ]
 else:
     
     DATABASES = {
@@ -110,11 +110,13 @@ else:
         'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
 
     }
+    CORS_ORIGIN_ALLOW_ALL = True
+    CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', ]
     
-#     CORS_ALLOWED_ORIGINS = [
-#     'https://web-production-d087.up.railway.app',
-#     ''
-# ]
+    # CORS_ALLOWED_ORIGINS = [
+    # 'https://web-production-d087.up.railway.app',
+    # ''
+    # ]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

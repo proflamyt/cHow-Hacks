@@ -97,12 +97,13 @@ if DEBUG:
 
     }
     CORS_ORIGIN_ALLOW_ALL = True
+    CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
 else:
     
     DATABASES = {
         "default": dj_database_url.config(default=os.getenv("DATABASE_URL"), conn_max_age=1800),
     }
-    #CSRF_TRUSTED_ORIGINS=['https://web-production-d087.up.railway.app']
+    
     
     SIMPLE_JWT = {
 

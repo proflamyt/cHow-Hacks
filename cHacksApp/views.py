@@ -80,15 +80,16 @@ class AnswerQuestions(APIView):
                     "message": "Question already answered"})
             
             if answer.lower().strip() == question.answer:
-                mark.answered =True
+                mark.answered = True
                 mark.save() 
                 right = Mark.objects.filter(question=question, answered=True, school=ans_school)
-                
-                serializer = MarkSerializer(right, context={'request': request}, many=True)
+                # push notification
+                Notification.objects.create(user=request.user, message=f"solved {question.name}: +{question.weight}pts")
+                # serializer = MarkSerializer(right, context={'request': request}, many=True)
                 return Response({"status":True, "message": "Answer is Correct"})
             return Response({"status": False, "message":"Answer is Incorrect" }, status=status.HTTP_200_OK)
         except Exception as e:
-            print(e)
+            
             return Response({"message":"Bad Request" }, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
@@ -31,9 +32,9 @@ class CustomUserManager(BaseUserManager): # 1.
         user.save()
         return user
 
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+        # user.set_password(password)
+        # user.save(using=self._db)
+        # return user
 
     def create_superuser(self, email, password, **extra_fields):
         """

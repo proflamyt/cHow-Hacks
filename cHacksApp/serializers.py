@@ -39,10 +39,12 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
         model = Questions
         # fields = ['url', 'id', 'name', 'weight', 'category', 'encoded', 'description', 'file', 'code', 'question_type' ]
         exclude = ('answer',)
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     representation['ans_num'] = MyModel.objects.filter(...).count()
-    #     return representation
+    def to_representation(self, instance):
+        request = self.context.get('request') 
+        representation = super().to_representation(instance)
+        marked, _ = Mark.objects.get_or_create(user=request.user, question=instance, school=1)
+        representation['is_solved'] = marked.answered
+        return representation
 
 class MarkSerializer(serializers.HyperlinkedModelSerializer):
     #url = serializers.HyperlinkedIdentityField(view_name='answers', lookup_field='pk')

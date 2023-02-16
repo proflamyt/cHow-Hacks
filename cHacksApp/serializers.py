@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import Mark, Questions, SchoolScore, Notification
+from .models import Mark, Questions, School, SchoolScore, Notification
 
 User = get_user_model()
 
@@ -41,8 +42,9 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ('answer',)
     def to_representation(self, instance):
         request = self.context.get('request') 
+        ans_school = get_object_or_404(School, name='ATC')
         representation = super().to_representation(instance)
-        marked, _ = Mark.objects.get_or_create(user=request.user, question=instance, school=1)
+        marked, _ = Mark.objects.get_or_create(user=request.user, question=instance, school=ans_school)
         representation['is_solved'] = marked.answered
         return representation
 

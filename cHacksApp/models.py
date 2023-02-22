@@ -65,7 +65,7 @@ class User(AbstractUser):
     # REQUIRED_FIELDS = [] # 6.
 
     class Meta:
-        ordering = ["user_score__score"]
+        ordering = ["-user_score__score"]
 
 
     def __str__(self):

@@ -113,6 +113,9 @@ class Questions(models.Model):
     file = models.FileField(blank=True)
     code = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return self.description[:10]
+
 
 class Notification(models.Model):
    # title = models.CharField(max_length=255)
@@ -127,6 +130,9 @@ class Mark(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='marked')
     answered = models.BooleanField(default=False)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.user
 
 
 @receiver (pre_save, sender=Mark)

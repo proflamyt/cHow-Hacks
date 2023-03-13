@@ -17,7 +17,7 @@ class School(models.Model):
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
-    def ___str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -112,6 +112,7 @@ class Questions(models.Model):
         max_length=1, choices=STATUS_CHOICES, default='E')
     file = models.FileField(blank=True)
     code = models.TextField(blank=True, null=True)
+    publish = models.BooleanField(default=True)
 
     def __str__(self):
         return self.description[:10]
@@ -147,6 +148,6 @@ def update_user_score(sender, instance, **kwargs):
 def update_answers(sender, instance, **kwargs):
     if instance.answer:
         instance.answer = instance.answer.lower().strip()
-        instance.encoded = "".join(["*" if c not in [" ", '.'] else c for c in instance.answer])
+        instance.encoded = "".join(["*" if c not in [" ", '.', '/'] else c for c in instance.answer])
 
         

@@ -45,14 +45,13 @@ class QuestionsView(viewsets.ModelViewSet):
     """
     Returns all Questions 
     """
-    #queryset = School.objects.get(name='ATC').questions.all().order_by('category')
     serializer_class = QuestionSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get']
 
     def get_queryset(self):
         school = get_object_or_404(School, name='ATC')
-        return school.questions.all().order_by('category')
+        return school.questions.filter(publish=True).order_by('category')
 
 
 class AnswerQuestions(APIView):

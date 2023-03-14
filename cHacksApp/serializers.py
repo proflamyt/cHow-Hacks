@@ -12,7 +12,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['username'] = user.name
+        token['username'] = user.username
         token['has_changed_password'] = user.changed_password
         return token
 
@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [ 'username', 'user_score']
-        #lookup_field = 'username'
+       
 
 
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
@@ -48,8 +48,7 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
         representation['is_solved'] = marked.answered
         return representation
 
-class MarkSerializer(serializers.HyperlinkedModelSerializer):
-    #url = serializers.HyperlinkedIdentityField(view_name='answers', lookup_field='pk')
+class MarkSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     class Meta:
         model = Mark

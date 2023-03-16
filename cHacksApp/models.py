@@ -92,6 +92,9 @@ class Notification(models.Model):
     read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-created_at"]
+
 
 class Mark(models.Model):
     question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name="question")

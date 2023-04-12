@@ -1,3 +1,4 @@
+from django.http import StreamingHttpResponse
 from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
@@ -151,3 +152,19 @@ class UserNotificationView(APIView):
         return Response ({
             "status": "success"
         })
+    
+
+class NotificationView(APIView):
+    def get(self, request):
+        # Set response header to indicate SSE
+        response = StreamingHttpResponse(self.event_stream(), content_type='text/event-stream')
+        response['Cache-Control'] = 'no-cache'
+        response['Connection'] = 'keep-alive'
+        return response
+
+    def event_stream(self):
+        while True:
+            # Wait for the notification_created signal to be sent
+            notification = notification_created.receive()
+            # Yield a server-sent event to the client
+            yield 'event: notification\ndata: {}\n\n'.format(notification)

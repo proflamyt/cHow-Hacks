@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.dispatch import Signal
+
+notification_created = Signal()
 
 # Create your models here.
 
@@ -94,6 +97,11 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Send the notification_created signal when a new notification is saved
+        notification_created.send(sender=self.__class__, notification=self)
 
 
 class Mark(models.Model):

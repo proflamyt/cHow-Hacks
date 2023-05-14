@@ -1,6 +1,6 @@
 from django.urls import include, path, re_path
 from rest_framework import routers
-from .views import AnswerQuestions, Certificate, UserNotificationView, MyTokenObtainPairView, PasswordChange, QuestionsView, ScorerView, UserViewSet
+from .views import AnswerQuestions, Certificate, NotificationView, UserNotificationView, MyTokenObtainPairView, PasswordChange, QuestionsView, ScorerView, UserViewSet
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -26,8 +26,7 @@ router.register(r'questions', QuestionsView, basename='questions')
 
 
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
+
 urlpatterns = [
     path('', include(router.urls)),
     path('answers/<slug:school>/<int:pk>', AnswerQuestions.as_view(), name='answers'),
@@ -37,6 +36,7 @@ urlpatterns = [
     path('change-password', PasswordChange.as_view()),
     path('questions/<str:school>/<int:pk>/solves', ScorerView.as_view()),
     path('notifications/<str:school>', UserNotificationView.as_view()),
+    path('notifications/sse/<str:school>', NotificationView.as_view()),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
